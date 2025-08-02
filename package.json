@@ -1,0 +1,17 @@
+{
+    "name": "timebook-parser",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "parse": "node cmd/parseFileCli.ts"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "devDependencies": {
+        "@types/node": "^24.1.0",
+        "typescript": "^5.9.2"
+    }
+}
