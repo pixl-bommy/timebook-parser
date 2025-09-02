@@ -14,6 +14,16 @@ type TimebookSummary struct {
 	TotalMins int
 }
 
+var taskTypes map[string]string = map[string]string{
+	"A": "Geplante Arbeiten",
+	"O": "Ungeplante Arbeiten",
+	"D": "Deployments",
+	"M": "Meetings",
+	"S": "Support",
+	"W": "Wartung",
+	"V": "Verschiedenes",
+}
+
 type TimebookService struct{}
 
 func (t *TimebookService) ServiceStartup(ctx context.Context, options application.ServiceOptions) error {
@@ -42,7 +52,12 @@ func (*TimebookService) ParseFile(filePath string) (TimebookSummary, error) {
 			continue
 		}
 
-		taskDurationMap[parsedTask.TaskShort] += parsedTask.DurationMins
+		sanitizedTaskShort := taskTypes[parsedTask.TaskShort]
+		if sanitizedTaskShort == "" {
+			sanitizedTaskShort = taskTypes["V"]
+		}
+
+		taskDurationMap[sanitizedTaskShort] += parsedTask.DurationMins
 		totalMins += parsedTask.DurationMins
 	}
 
