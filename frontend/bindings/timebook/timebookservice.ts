@@ -18,5 +18,9 @@ export function ParseFile(filePath: string): $CancellablePromise<$models.Timeboo
     });
 }
 
+export function SelectFile(): $CancellablePromise<string> {
+    return $Call.ByID(1570251951);
+}
+
 // Private type creation functions
 const $$createType0 = $models.TimebookSummary.createFrom;

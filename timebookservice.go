@@ -51,3 +51,12 @@ func (*TimebookService) ParseFile(filePath string) (TimebookSummary, error) {
 		TotalMins: totalMins,
 	}, nil
 }
+
+func (*TimebookService) SelectFile() (string, error) {
+	dialog := application.OpenFileDialog()
+	dialog.CanChooseFiles(true)
+	dialog.SetTitle("Select Timebook File")
+	dialog.AddFilter("Timebook (*.md)", "*.md")
+
+	return dialog.PromptForSingleSelection()
+}

@@ -5,9 +5,15 @@ import "./App.css";
 
 export function App() {
     const [content, setContent] = useState<React.ReactNode>("");
+    const [filename, setFilename] = useState<string>("");
 
     useEffect(() => {
-        TimebookService.ParseFile("./.exampleFiles/2025-Q3.md").then((result) => {
+        if (filename === "") {
+            setContent("No file selected");
+            return;
+        }
+
+        TimebookService.ParseFile(filename).then((result) => {
             if (result === null) {
                 setContent("null");
                 return;
@@ -29,7 +35,7 @@ export function App() {
                         <div
                             key={entry.key}
                             className="bar"
-                            style={{ width: width + "%", backgroundColor: `hsl(${hue}, 70%, 50%)` }}
+                            style={{ width: width + "%", backgroundColor: `hsl(${hue}, 70%, 30%)` }}
                         >
                             {entry.key}: {entry.percentage}% ({entry.minutes} mins)
                         </div>
@@ -38,7 +44,23 @@ export function App() {
 
             setContent(bars);
         });
-    }, []);
+    }, [filename]);
 
-    return <div className="container">{content}</div>;
+    function handleFileSelect() {
+        TimebookService.SelectFile().then((filePath) => {
+            if (filePath) {
+                setFilename(filePath);
+            }
+        });
+    }
+
+    return (
+        <>
+            <div className="container">{content}</div>
+            <div>
+                <button onClick={handleFileSelect}>Open Timebook File</button>
+                {filename && <p>Selected file: {filename}</p>}
+            </div>
+        </>
+    );
 }
