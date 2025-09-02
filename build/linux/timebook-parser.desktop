@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=timebook-parser
+Exec=timebook-parser
+Icon=timebook-parser
+Categories=Development;
+Terminal=false
+Keywords=wails
+Version=1.0
+StartupNotify=false
