@@ -7,6 +7,13 @@ import (
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
+type TimebookSummary struct {
+	// Map of task short to total duration in minutes
+	Entries map[string]int
+	// Total duration in minutes
+	TotalMins int
+}
+
 type TimebookService struct{}
 
 func (t *TimebookService) ServiceStartup(ctx context.Context, options application.ServiceOptions) error {
@@ -14,13 +21,14 @@ func (t *TimebookService) ServiceStartup(ctx context.Context, options applicatio
 }
 
 // Read a file and parse its content to a map of task short to total duration in minutes
-func (*TimebookService) ParseFile(filePath string) (map[string]int, error) {
+func (*TimebookService) ParseFile(filePath string) (TimebookSummary, error) {
 	lines, err := utils.LoadFileToStringArray(filePath)
 	if err != nil {
-		return nil, err
+		return TimebookSummary{}, err
 	}
 
 	taskDurationMap := make(map[string]int)
+	totalMins := 0
 
 	filteredLines := utils.FilterAndTrimLines(lines)
 	for _, line := range filteredLines {
@@ -35,7 +43,11 @@ func (*TimebookService) ParseFile(filePath string) (map[string]int, error) {
 		}
 
 		taskDurationMap[parsedTask.TaskShort] += parsedTask.DurationMins
+		totalMins += parsedTask.DurationMins
 	}
 
-	return taskDurationMap, nil
+	return TimebookSummary{
+		Entries:   taskDurationMap,
+		TotalMins: totalMins,
+	}, nil
 }

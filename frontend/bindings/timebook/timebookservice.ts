@@ -5,14 +5,18 @@
 // @ts-ignore: Unused imports
 import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Create } from "@wailsio/runtime";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: Unused imports
+import * as $models from "./models.js";
+
 /**
  * Read a file and parse its content to a map of task short to total duration in minutes
  */
-export function ParseFile(filePath: string): $CancellablePromise<{ [_: string]: number }> {
+export function ParseFile(filePath: string): $CancellablePromise<$models.TimebookSummary> {
     return $Call.ByID(2254233486, filePath).then(($result: any) => {
         return $$createType0($result);
     });
 }
 
 // Private type creation functions
-const $$createType0 = $Create.Map($Create.Any, $Create.Any);
+const $$createType0 = $models.TimebookSummary.createFrom;

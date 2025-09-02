@@ -5,3 +5,7 @@ import * as TimebookService from "./timebookservice.js";
 export {
     TimebookService
 };
+
+export {
+    TimebookSummary
+} from "./models.js";
