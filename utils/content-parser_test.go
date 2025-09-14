@@ -172,7 +172,7 @@ func TestParseLine(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, ok := ParseLine(tt.input)
+			result, ok := ParseTaskLine(tt.input)
 			if ok != tt.ok {
 				t.Errorf("ParseLine(%q) ok = %v; want %v", tt.input, ok, tt.ok)
 			}

@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"log"
 	"strconv"
 	"strings"
 )
@@ -16,6 +17,12 @@ type ParsedTask struct {
 	TaskShort    string
 	StartTime    string
 	EndTime      string
+	DurationMins int
+}
+
+type ParsedExpection struct {
+	Line         string
+	TaskShort    string
 	DurationMins int
 }
 
@@ -43,12 +50,55 @@ func FilterAndTrimLines(lines []string) []string {
 	return filteredLines
 }
 
-// Parse line to extract task short, start and end time
+// Parse expected line to extract expected task information
+// Example line: "> - Task Long A: 178h"
+// Example line: "> - Task Long W: 20h"
+// Example line: "> - Another Task Long M: 20h"
+func ParseExpectionLine(line string) (*ParsedExpection, bool) {
+	// if line does not start with "> - ", ignore
+	if len(line) < 4 || line[0:4] != "> - " {
+		return nil, false
+	}
+
+	// Find the position of the colon
+	colonIndex := strings.Index(line, ":")
+	if colonIndex == -1 {
+		return nil, false
+	}
+
+	// Task short is the last character before the colon
+	taskPart := strings.TrimSpace(line[colonIndex-1 : colonIndex])
+	if len(taskPart) == 0 {
+		return nil, false
+	}
+
+	// Duration is the part after the colon, trim spaces and "h"
+	durationPart := strings.TrimSpace(line[colonIndex+1:])
+	durationPart = strings.TrimSuffix(durationPart, "h")
+	if len(durationPart) == 0 {
+		return nil, false
+	}
+
+	durationHours, err := strconv.Atoi(durationPart)
+	if err != nil || durationHours < 0 {
+		return nil, false
+	}
+
+	log.Printf("Parsed expection line: taskShort=%s, durationHours=%d", taskPart, durationHours)
+
+	return &ParsedExpection{
+		Line:         line,
+		TaskShort:    strings.ToUpper(taskPart),
+		DurationMins: durationHours * 60,
+	}, true
+}
+
+// Parse task line to extract task short, start and end time
 // Example line: "- (V 1:23 - 4:56) Task description"
 // Example line: "- (Mm 1:23 - 4:56) Task description"
 // Example line: "- (V 11:23 - 14:56) Task description"
 // Example line: "- (V 01:23 - 04:56) Task description"
-func ParseLine(line string) (*RawTask, bool) {
+func ParseTaskLine(line string) (*RawTask, bool) {
 	// Find the position of the closing parenthesis
 	closeParenIndex := strings.Index(line, ")")
 	if closeParenIndex == -1 {

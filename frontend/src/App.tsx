@@ -30,6 +30,8 @@ export function App() {
                 return;
             }
 
+            console.log("Parsed result:", result);
+
             const bars = Object.entries(result.Entries)
                 .map(([key, entry]) => ({
                     key,

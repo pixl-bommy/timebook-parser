@@ -68,9 +68,37 @@ func (*TimebookService) ParseFileExtended(filePath string, taskMap map[string]st
 	})
 	totalMins := 0
 
+	// parse each line for expected task information
+	for _, line := range lines {
+		parsedExpection, ok := utils.ParseExpectionLine(line)
+		if !ok {
+			continue
+		}
+
+		sanitizedTaskShort := taskMap[parsedExpection.TaskShort]
+		if sanitizedTaskShort == "" {
+			sanitizedTaskShort = taskMap["V"]
+		}
+
+		// add entry if not exists
+		if _, exists := taskDurationMap[sanitizedTaskShort]; exists {
+			continue
+		}
+
+		taskDurationMap[sanitizedTaskShort] = struct {
+			Value    int
+			Expected int
+		}{
+			Value:    0,
+			Expected: parsedExpection.DurationMins,
+		}
+
+	}
+
+	// parse each line for task information
 	filteredLines := utils.FilterAndTrimLines(lines)
 	for _, line := range filteredLines {
-		rawTask, ok := utils.ParseLine(line)
+		rawTask, ok := utils.ParseTaskLine(line)
 		if !ok {
 			continue
 		}
