@@ -18,6 +18,24 @@ export function ParseFile(filePath: string): $CancellablePromise<$models.Timeboo
     });
 }
 
+/**
+ * Read a file and parse its content to a map of task short to total duration in minutes
+ */
+export function ParseFileExtended(filePath: string, taskMap: { [_: string]: string }): $CancellablePromise<$models.TimebookSummary> {
+    return $Call.ByID(3088896547, filePath, taskMap).then(($result: any) => {
+        return $$createType0($result);
+    });
+}
+
+/**
+ * Read a file and parse its content to a map of task short to total duration in minutes, merging some task types
+ */
+export function ParseFileMerged(filePath: string): $CancellablePromise<$models.TimebookSummary> {
+    return $Call.ByID(2161806574, filePath).then(($result: any) => {
+        return $$createType0($result);
+    });
+}
+
 export function SelectFile(): $CancellablePromise<string> {
     return $Call.ByID(1570251951);
 }

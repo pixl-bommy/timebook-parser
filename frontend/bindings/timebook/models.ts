@@ -9,7 +9,7 @@ export class TimebookSummary {
     /**
      * Map of task short to total duration in minutes
      */
-    "Entries": { [_: string]: number };
+    "Entries": { [_: string]: {"Value": number, "Expected": number} };
 
     /**
      * Total duration in minutes

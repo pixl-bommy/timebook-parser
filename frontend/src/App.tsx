@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { GoSync } from "react-icons/go";
 import { TimebookService } from "../bindings/timebook";
 
@@ -7,6 +7,7 @@ import "./App.css";
 export function App() {
     const [content, setContent] = useState<React.ReactNode>("");
     const [filename, setFilename] = useState<string>("");
+    const [showMergedResults, setShowMergedResults] = useState<boolean>(true);
 
     useEffect(() => {
         if (filename === "") {
@@ -14,22 +15,26 @@ export function App() {
             return;
         }
 
-        loadFile(filename);
+        loadFile();
     }, [filename]);
 
-    async function loadFile(filePath: string) {
+    const loadFile = useCallback(async () => {
+        const ParseTimebookFile = showMergedResults
+            ? TimebookService.ParseFileMerged
+            : TimebookService.ParseFile;
+
         try {
-            const result = await TimebookService.ParseFile(filePath);
+            const result = await ParseTimebookFile(filename);
             if (!result) {
                 setContent(<div>Something went wrong.</div>);
                 return;
             }
 
             const bars = Object.entries(result.Entries)
-                .map(([key, value]) => ({
+                .map(([key, entry]) => ({
                     key,
-                    minutes: value,
-                    percentage: Math.round((value / result.TotalMins) * 100),
+                    minutes: entry.Value,
+                    percentage: Math.round((entry.Value / result.TotalMins) * 100),
                 }))
                 .sort((a, b) => b.minutes - a.minutes)
                 .map((entry, _, entries) => {
@@ -56,7 +61,7 @@ export function App() {
         } catch (error) {
             setContent(<div>Error loading file: {(error as Error)?.message}</div>);
         }
-    }
+    }, [filename, showMergedResults]);
 
     function handleFileSelect() {
         TimebookService.SelectFile().then((filePath) => {
@@ -72,14 +77,22 @@ export function App() {
             <div>
                 <button onClick={handleFileSelect}>Open Timebook File</button>
                 {filename && (
-                    <>
-                        <button onClick={() => loadFile(filename)}>
-                            <GoSync />
-                        </button>
-                        <p>Selected file: {filename}</p>
-                    </>
+                    <button onClick={() => loadFile()}>
+                        <GoSync />
+                    </button>
                 )}
             </div>
+            <div>
+                <input
+                    type="checkbox"
+                    id="merged"
+                    name="merged"
+                    onChange={(e) => setShowMergedResults(e.target.checked)}
+                    checked={showMergedResults}
+                />
+                <label htmlFor="merged">Use merged task groups</label>
+            </div>
+            <div>{filename && <p>Selected file: {filename}</p>}</div>
         </>
     );
 }
