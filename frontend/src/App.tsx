@@ -7,7 +7,6 @@ import "./App.css";
 export function App() {
     const [content, setContent] = useState<React.ReactNode>("");
     const [filename, setFilename] = useState<string>("");
-    const [showMergedResults, setShowMergedResults] = useState<boolean>(true);
 
     useEffect(() => {
         if (filename === "") {
@@ -19,12 +18,8 @@ export function App() {
     }, [filename]);
 
     const loadFile = useCallback(async () => {
-        const ParseTimebookFile = showMergedResults
-            ? TimebookService.ParseFileMerged
-            : TimebookService.ParseFile;
-
         try {
-            const result = await ParseTimebookFile(filename);
+            const result = await TimebookService.ParseFile(filename);
             if (!result) {
                 setContent(<div>Something went wrong.</div>);
                 return;
@@ -32,12 +27,11 @@ export function App() {
 
             console.log("Parsed result:", result);
 
-            const bars = Object.entries(result.Entries)
-                .map(([key, entry]) => ({
-                    key,
-                    minutes: entry.Value,
-                    percentage: Math.round((entry.Value / result.TotalMins) * 100),
-                }))
+            const bars = result.Entries.map((entry) => ({
+                key: entry.TaskName,
+                minutes: entry.TotalMinutes,
+                percentage: Math.round((entry.TotalMinutes / result.TotalMins) * 100),
+            }))
                 .sort((a, b) => b.minutes - a.minutes)
                 .map((entry, _, entries) => {
                     const width = Math.round((entry.minutes / entries[0].minutes) * 100);
@@ -63,7 +57,7 @@ export function App() {
         } catch (error) {
             setContent(<div>Error loading file: {(error as Error)?.message}</div>);
         }
-    }, [filename, showMergedResults]);
+    }, [filename]);
 
     function handleFileSelect() {
         TimebookService.SelectFile().then((filePath) => {
@@ -83,16 +77,6 @@ export function App() {
                         <GoSync />
                     </button>
                 )}
-            </div>
-            <div>
-                <input
-                    type="checkbox"
-                    id="merged"
-                    name="merged"
-                    onChange={(e) => setShowMergedResults(e.target.checked)}
-                    checked={showMergedResults}
-                />
-                <label htmlFor="merged">Use merged task groups</label>
             </div>
             <div>{filename && <p>Selected file: {filename}</p>}</div>
         </>

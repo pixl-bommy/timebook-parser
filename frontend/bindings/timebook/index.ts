@@ -7,5 +7,8 @@ export {
 };
 
 export {
+    CategoryShort,
+    SummaryEntry,
+    TaskShort,
     TimebookSummary
 } from "./models.js";

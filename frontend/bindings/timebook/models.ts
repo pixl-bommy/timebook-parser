@@ -5,21 +5,87 @@
 // @ts-ignore: Unused imports
 import { Create as $Create } from "@wailsio/runtime";
 
-export class TimebookSummary {
+export enum CategoryShort {
     /**
-     * Map of task short to total duration in minutes
+     * The Go zero value for the underlying type of the enum.
      */
-    "Entries": { [_: string]: {"Value": number, "Expected": number} };
+    $zero = "",
+
+    PlannedWorkCategory = "A",
+    UnplannedWorkCategory = "O",
+    MeetingsCategory = "M",
+    MaintenanceCategory = "W",
+    MiscellaneousCategory = "V",
+};
+
+export class SummaryEntry {
+    "TaskShort": TaskShort;
+    "TaskName": string;
+    "CategoryShort": CategoryShort;
+    "CategoryName": string;
+    "TotalMinutes": number;
+    "ExpectedMinutes": number;
+    "CountTasks": number;
+
+    /** Creates a new SummaryEntry instance. */
+    constructor($$source: Partial<SummaryEntry> = {}) {
+        if (!("TaskShort" in $$source)) {
+            this["TaskShort"] = TaskShort.$zero;
+        }
+        if (!("TaskName" in $$source)) {
+            this["TaskName"] = "";
+        }
+        if (!("CategoryShort" in $$source)) {
+            this["CategoryShort"] = CategoryShort.$zero;
+        }
+        if (!("CategoryName" in $$source)) {
+            this["CategoryName"] = "";
+        }
+        if (!("TotalMinutes" in $$source)) {
+            this["TotalMinutes"] = 0;
+        }
+        if (!("ExpectedMinutes" in $$source)) {
+            this["ExpectedMinutes"] = 0;
+        }
+        if (!("CountTasks" in $$source)) {
+            this["CountTasks"] = 0;
+        }
+
+        Object.assign(this, $$source);
+    }
 
     /**
-     * Total duration in minutes
+     * Creates a new SummaryEntry instance from a string or object.
      */
+    static createFrom($$source: any = {}): SummaryEntry {
+        let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
+        return new SummaryEntry($$parsedSource as Partial<SummaryEntry>);
+    }
+}
+
+export enum TaskShort {
+    /**
+     * The Go zero value for the underlying type of the enum.
+     */
+    $zero = "",
+
+    PlannedWork = "A",
+    UnplannedWork = "O",
+    Deployments = "D",
+    Meetings = "M",
+    Support = "S",
+    Maintenance = "W",
+    Miscellaneous = "V",
+};
+
+export class TimebookSummary {
+    "Entries": SummaryEntry[];
     "TotalMins": number;
 
     /** Creates a new TimebookSummary instance. */
     constructor($$source: Partial<TimebookSummary> = {}) {
         if (!("Entries" in $$source)) {
-            this["Entries"] = {};
+            this["Entries"] = [];
         }
         if (!("TotalMins" in $$source)) {
             this["TotalMins"] = 0;
@@ -32,7 +98,7 @@ export class TimebookSummary {
      * Creates a new TimebookSummary instance from a string or object.
      */
     static createFrom($$source: any = {}): TimebookSummary {
-        const $$createField0_0 = $$createType0;
+        const $$createField0_0 = $$createType1;
         let $$parsedSource = typeof $$source === 'string' ? JSON.parse($$source) : $$source;
         if ("Entries" in $$parsedSource) {
             $$parsedSource["Entries"] = $$createField0_0($$parsedSource["Entries"]);
@@ -42,4 +108,5 @@ export class TimebookSummary {
 }
 
 // Private type creation functions
-const $$createType0 = $Create.Map($Create.Any, $Create.Any);
+const $$createType0 = SummaryEntry.createFrom;
+const $$createType1 = $Create.Array($$createType0);
