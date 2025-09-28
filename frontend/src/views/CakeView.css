@@ -1,0 +1,40 @@
+.cake {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+
+    color: white;
+    margin: 5px 0;
+    border-radius: 4px;
+
+    text-wrap: nowrap;
+}
+
+.cake-slice {
+    position: absolute;
+    /* give it the desired width */
+    width: 100%;
+    /* make it square */
+    aspect-ratio: 1;
+    /* round its corners to turn the square into a disc */
+    border-radius: 50%;
+    background:
+        conic-gradient(
+            /* specify the angle to start from */
+            from 0deg,
+            /* specify the sector angle */
+            var(--sliceColor, hotpink) var(--angle, 75deg),
+            /* abruptly switch to transparent after */
+            #0000 0%);
+    transform-origin: 50% 50%;
+    transform: rotate(var(--start, 0deg));
+
+    & div {
+        position: absolute;
+        top: 0.25rem;
+        left: calc(50% + 0.25rem);
+
+        transform-origin: 50% 50%;
+        transform: rotate(calc(360deg - var(--start, 0deg)));
+    }
+}

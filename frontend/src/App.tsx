@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { GoSync } from "react-icons/go";
+
 import { TimebookService } from "../bindings/timebook";
+import { CakeView } from "./views/CakeView";
 
 import "./App.css";
-import { HorizontalBarView } from "./views/HorizontalBarView";
 
 export function App() {
     const [content, setContent] = useState<React.ReactNode>("");
@@ -28,7 +29,7 @@ export function App() {
 
             console.log("Parsed result:", timebookSummary);
 
-            const view = <HorizontalBarView timebookSummary={timebookSummary} />;
+            const view = <CakeView timebookSummary={timebookSummary} />;
             setContent(view);
         } catch (error) {
             setContent(<div>Error loading file: {(error as Error)?.message}</div>);
