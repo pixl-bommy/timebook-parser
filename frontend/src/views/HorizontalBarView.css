@@ -1,0 +1,9 @@
+.bar {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+
+    text-wrap: nowrap;
+}

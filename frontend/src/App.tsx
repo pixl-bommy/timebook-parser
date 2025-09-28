@@ -3,6 +3,7 @@ import { GoSync } from "react-icons/go";
 import { TimebookService } from "../bindings/timebook";
 
 import "./App.css";
+import { HorizontalBarView } from "./views/HorizontalBarView";
 
 export function App() {
     const [content, setContent] = useState<React.ReactNode>("");
@@ -19,38 +20,16 @@ export function App() {
 
     const loadFile = useCallback(async () => {
         try {
-            const result = await TimebookService.ParseFile(filename);
-            if (!result) {
+            const timebookSummary = await TimebookService.ParseFile(filename);
+            if (!timebookSummary) {
                 setContent(<div>Something went wrong.</div>);
                 return;
             }
 
-            console.log("Parsed result:", result);
+            console.log("Parsed result:", timebookSummary);
 
-            const bars = result.Entries.sort((a, b) => b.ReceivedMinutes - a.ReceivedMinutes).map(
-                (entry, _, entries) => {
-                    const width = Math.round((entry.FactorOfTotal / entries[0].FactorOfTotal) * 100);
-
-                    const hue = 120 - Math.round((width / 100) * 120); // 0 (red) to 120 (green)
-                    const durationHours = (entry.ReceivedMinutes / 60).toFixed(1);
-                    const percentage = (entry.FactorOfTotal*100).toFixed(0);
-
-                    return (
-                        <div
-                            key={entry.TaskName}
-                            className="bar"
-                            style={{
-                                width: width + "%",
-                                backgroundColor: `hsl(${hue}, 70%, 30%)`,
-                            }}
-                        >
-                            {entry.TaskName}: {percentage}% ({durationHours} hours)
-                        </div>
-                    );
-                },
-            );
-
-            setContent(bars);
+            const view = <HorizontalBarView timebookSummary={timebookSummary} />;
+            setContent(view);
         } catch (error) {
             setContent(<div>Error loading file: {(error as Error)?.message}</div>);
         }
