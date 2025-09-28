@@ -27,31 +27,28 @@ export function App() {
 
             console.log("Parsed result:", result);
 
-            const bars = result.Entries.map((entry) => ({
-                key: entry.TaskName,
-                minutes: entry.ReceivedMinutes,
-                percentage: Math.round((entry.ReceivedMinutes / result.TotalMins) * 100),
-            }))
-                .sort((a, b) => b.minutes - a.minutes)
-                .map((entry, _, entries) => {
-                    const width = Math.round((entry.minutes / entries[0].minutes) * 100);
+            const bars = result.Entries.sort((a, b) => b.ReceivedMinutes - a.ReceivedMinutes).map(
+                (entry, _, entries) => {
+                    const width = Math.round((entry.FactorOfTotal / entries[0].FactorOfTotal) * 100);
 
                     const hue = 120 - Math.round((width / 100) * 120); // 0 (red) to 120 (green)
-                    const durationHours = (entry.minutes / 60).toFixed(1);
+                    const durationHours = (entry.ReceivedMinutes / 60).toFixed(1);
+                    const percentage = (entry.FactorOfTotal*100).toFixed(0);
 
                     return (
                         <div
-                            key={entry.key}
+                            key={entry.TaskName}
                             className="bar"
                             style={{
                                 width: width + "%",
                                 backgroundColor: `hsl(${hue}, 70%, 30%)`,
                             }}
                         >
-                            {entry.key}: {entry.percentage}% ({durationHours} hours)
+                            {entry.TaskName}: {percentage}% ({durationHours} hours)
                         </div>
                     );
-                });
+                },
+            );
 
             setContent(bars);
         } catch (error) {
