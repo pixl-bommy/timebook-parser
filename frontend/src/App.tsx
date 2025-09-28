@@ -1,18 +1,22 @@
 import { useState, useEffect } from "react";
+
+import { BiSolidBarChartAlt2, BiSolidPieChartAlt2 } from "react-icons/bi";
 import { GoSync } from "react-icons/go";
 
-import { TimebookService } from "../bindings/timebook";
+import { TimebookService, TimebookSummary } from "../bindings/timebook";
 import { CakeView } from "./views/CakeView";
+import { HorizontalBarView } from "./views/HorizontalBarView";
 
 import "./App.css";
 
 export function App() {
-    const [content, setContent] = useState<React.ReactNode>("");
+    const [currentView, setCurrentView] = useState<"cake" | "bar" | null>("cake");
+    const [timebookSummary, setTimebookSummary] = useState<TimebookSummary | null>(null);
     const [filename, setFilename] = useState<string>("");
 
     useEffect(() => {
         if (filename === "") {
-            setContent("No file selected");
+            setTimebookSummary(null);
             return;
         }
 
@@ -23,16 +27,14 @@ export function App() {
         try {
             const timebookSummary = await TimebookService.ParseFile(filename);
             if (!timebookSummary) {
-                setContent(<div>Something went wrong.</div>);
+                setTimebookSummary(null);
                 return;
             }
 
             console.log("Parsed result:", timebookSummary);
-
-            const view = <CakeView timebookSummary={timebookSummary} />;
-            setContent(view);
+            setTimebookSummary(timebookSummary);
         } catch (error) {
-            setContent(<div>Error loading file: {(error as Error)?.message}</div>);
+            setTimebookSummary(null);
         }
     }
 
@@ -50,16 +52,32 @@ export function App() {
 
     return (
         <>
-            <div className="container">{content}</div>
-            <div>
+            <div className="container">
+                {timebookSummary
+                    ? (currentView === "cake" && <CakeView timebookSummary={timebookSummary} />) ||
+                      (currentView === "bar" && (
+                          <HorizontalBarView timebookSummary={timebookSummary} />
+                      )) ||
+                      "No view selected."
+                    : "No data to display."}
+            </div>
+            <div className="toolbar">
                 <button onClick={handleFileSelect}>Open Timebook File</button>
                 {filename && (
                     <button onClick={handleLoadFile}>
                         <GoSync />
                     </button>
                 )}
+                <div>
+                    <button onClick={() => setCurrentView("bar")}>
+                        <BiSolidBarChartAlt2 />
+                    </button>
+                    <button onClick={() => setCurrentView("cake")}>
+                        <BiSolidPieChartAlt2 />
+                    </button>
+                </div>
             </div>
-            <div>{filename && <p>Selected file: {filename}</p>}</div>
+            <div className="toolbar">{filename && `Selected file: ${filename}`}</div>
         </>
     );
 }
