@@ -18,14 +18,59 @@ export enum CategoryShort {
     MiscellaneousCategory = "V",
 };
 
+/**
+ * A summary entry for a specific task
+ */
 export class SummaryEntry {
+    /**
+     * The task short code (e.g. "A" for planned work)
+     */
     "TaskShort": TaskShort;
+
+    /**
+     * The full name of the task (e.g. "Planned Work")
+     */
     "TaskName": string;
+
+    /**
+     * The category short code (e.g. "M" for meetings)
+     */
     "CategoryShort": CategoryShort;
+
+    /**
+     * The full name of the category (e.g. "Meetings")
+     */
     "CategoryName": string;
-    "TotalMinutes": number;
-    "ExpectedMinutes": number;
+
+    /**
+     * Number of tasks for this entry
+     */
     "CountTasks": number;
+
+    /**
+     * Minutes expected for this task
+     * If zero, no expectation is set
+     */
+    "ExpectedMinutes": number;
+
+    /**
+     * Minutes actually received for this task
+     */
+    "ReceivedMinutes": number;
+
+    /**
+     * Factor of received minutes to expected minutes
+     * If ExpectedMinutes is zero, this will also be zero.
+     * NOTE: This is a factor between 0 and 1, not a percentage.
+     */
+    "FactorOfExpected": number;
+
+    /**
+     * Factor of received minutes to total minutes
+     * NOTE: This is a factor calculated over all tasks in the timebook.
+     * NOTE: This is a factor between 0 and 1, not a percentage.
+     */
+    "FactorOfTotal": number;
 
     /** Creates a new SummaryEntry instance. */
     constructor($$source: Partial<SummaryEntry> = {}) {
@@ -41,14 +86,20 @@ export class SummaryEntry {
         if (!("CategoryName" in $$source)) {
             this["CategoryName"] = "";
         }
-        if (!("TotalMinutes" in $$source)) {
-            this["TotalMinutes"] = 0;
+        if (!("CountTasks" in $$source)) {
+            this["CountTasks"] = 0;
         }
         if (!("ExpectedMinutes" in $$source)) {
             this["ExpectedMinutes"] = 0;
         }
-        if (!("CountTasks" in $$source)) {
-            this["CountTasks"] = 0;
+        if (!("ReceivedMinutes" in $$source)) {
+            this["ReceivedMinutes"] = 0;
+        }
+        if (!("FactorOfExpected" in $$source)) {
+            this["FactorOfExpected"] = 0;
+        }
+        if (!("FactorOfTotal" in $$source)) {
+            this["FactorOfTotal"] = 0;
         }
 
         Object.assign(this, $$source);
@@ -63,6 +114,9 @@ export class SummaryEntry {
     }
 }
 
+/**
+ * A task short code (e.g. "A" for planned work)
+ */
 export enum TaskShort {
     /**
      * The Go zero value for the underlying type of the enum.
@@ -78,6 +132,9 @@ export enum TaskShort {
     Miscellaneous = "V",
 };
 
+/**
+ * Summary of timebook entries including total minutes
+ */
 export class TimebookSummary {
     "Entries": SummaryEntry[];
     "TotalMins": number;

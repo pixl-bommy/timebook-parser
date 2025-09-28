@@ -1,5 +1,41 @@
 package main
 
+// Summary of timebook entries including total minutes
+type TimebookSummary struct {
+	Entries   []SummaryEntry
+	TotalMins int
+}
+
+// A summary entry for a specific task
+type SummaryEntry struct {
+	// The task short code (e.g. "A" for planned work)
+	TaskShort TaskShort
+	// The full name of the task (e.g. "Planned Work")
+	TaskName string
+	// The category short code (e.g. "M" for meetings)
+	CategoryShort CategoryShort
+	// The full name of the category (e.g. "Meetings")
+	CategoryName string
+	// Number of tasks for this entry
+	CountTasks int
+
+	// Minutes expected for this task
+	// If zero, no expectation is set
+	ExpectedMinutes int
+	// Minutes actually received for this task
+	ReceivedMinutes int
+
+	// Factor of received minutes to expected minutes
+	// If ExpectedMinutes is zero, this will also be zero.
+	// NOTE: This is a factor between 0 and 1, not a percentage.
+	FactorOfExpected float64
+	// Factor of received minutes to total minutes
+	// NOTE: This is a factor calculated over all tasks in the timebook.
+	// NOTE: This is a factor between 0 and 1, not a percentage.
+	FactorOfTotal float64
+}
+
+// A task short code (e.g. "A" for planned work)
 type TaskShort string
 
 const (
@@ -11,25 +47,6 @@ const (
 	Maintenance   TaskShort = "W"
 	Miscellaneous TaskShort = "V"
 )
-
-func toTaskShort(input string) TaskShort {
-	switch input {
-	case "A":
-		return PlannedWork
-	case "O":
-		return UnplannedWork
-	case "D":
-		return Deployments
-	case "M":
-		return Meetings
-	case "S":
-		return Support
-	case "W":
-		return Maintenance
-	default:
-		return Miscellaneous
-	}
-}
 
 func (t TaskShort) FullName() string {
 	switch t {
@@ -98,23 +115,4 @@ func (t CategoryShort) FullName() string {
 	default:
 		return "Unbekannt"
 	}
-}
-
-type SummaryEntry struct {
-	TaskShort     TaskShort
-	TaskName      string
-	CategoryShort CategoryShort
-	CategoryName  string
-	CountTasks    int
-
-	ExpectedMinutes int
-	ReceivedMinutes int
-
-	FactorOfExpected float64
-	FactorOfTotal    float64
-}
-
-type TimebookSummary struct {
-	Entries   []SummaryEntry
-	TotalMins int
 }

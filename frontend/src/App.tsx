@@ -29,8 +29,8 @@ export function App() {
 
             const bars = result.Entries.map((entry) => ({
                 key: entry.TaskName,
-                minutes: entry.TotalMinutes,
-                percentage: Math.round((entry.TotalMinutes / result.TotalMins) * 100),
+                minutes: entry.ReceivedMinutes,
+                percentage: Math.round((entry.ReceivedMinutes / result.TotalMins) * 100),
             }))
                 .sort((a, b) => b.minutes - a.minutes)
                 .map((entry, _, entries) => {

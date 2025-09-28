@@ -30,7 +30,7 @@ func (t *TimebookService) ParseFile(filePath string) (TimebookSummary, error) {
 			continue
 		}
 
-		taskShort := toTaskShort(parsedExpection.TaskShort)
+		taskShort := newTaskShortFromInput(parsedExpection.TaskShort)
 
 		// update existing entry
 		if entry, exists := taskDurationMap[taskShort]; exists {
@@ -58,7 +58,7 @@ func (t *TimebookService) ParseFile(filePath string) (TimebookSummary, error) {
 			continue
 		}
 
-		taskShort := toTaskShort(parsedTask.TaskShort)
+		taskShort := newTaskShortFromInput(parsedTask.TaskShort)
 
 		// increment total minutes
 		totalMins += parsedTask.DurationMins
@@ -101,6 +101,25 @@ func (t *TimebookService) ParseFile(filePath string) (TimebookSummary, error) {
 		Entries:   entries,
 		TotalMins: totalMins,
 	}, nil
+}
+
+func newTaskShortFromInput(input string) TaskShort {
+	switch input {
+	case "A":
+		return PlannedWork
+	case "O":
+		return UnplannedWork
+	case "D":
+		return Deployments
+	case "M":
+		return Meetings
+	case "S":
+		return Support
+	case "W":
+		return Maintenance
+	default:
+		return Miscellaneous
+	}
 }
 
 func newSummaryEntry(taskShort TaskShort) SummaryEntry {
