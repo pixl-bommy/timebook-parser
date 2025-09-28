@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { GoSync } from "react-icons/go";
 import { TimebookService } from "../bindings/timebook";
 
@@ -15,10 +15,10 @@ export function App() {
             return;
         }
 
-        loadFile();
+        handleLoadFile();
     }, [filename]);
 
-    const loadFile = useCallback(async () => {
+    async function handleLoadFile() {
         try {
             const timebookSummary = await TimebookService.ParseFile(filename);
             if (!timebookSummary) {
@@ -33,14 +33,18 @@ export function App() {
         } catch (error) {
             setContent(<div>Error loading file: {(error as Error)?.message}</div>);
         }
-    }, [filename]);
+    }
 
-    function handleFileSelect() {
-        TimebookService.SelectFile().then((filePath) => {
-            if (filePath) {
-                setFilename(filePath);
-            }
-        });
+    async function handleFileSelect() {
+        try {
+            const filePath = await TimebookService.SelectFile();
+            if (!filePath) throw new Error("Selection cancelled, as no file path was returned.");
+
+            setFilename(filePath);
+        } catch (error) {
+            console.log("File selection was cancelled due to error.", error);
+            setFilename("");
+        }
     }
 
     return (
@@ -49,7 +53,7 @@ export function App() {
             <div>
                 <button onClick={handleFileSelect}>Open Timebook File</button>
                 {filename && (
-                    <button onClick={() => loadFile()}>
+                    <button onClick={handleLoadFile}>
                         <GoSync />
                     </button>
                 )}
