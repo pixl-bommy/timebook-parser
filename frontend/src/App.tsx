@@ -10,7 +10,7 @@ import { HorizontalBarView } from "./views/HorizontalBarView";
 import "./App.css";
 
 export function App() {
-    const [currentView, setCurrentView] = useState<"cake" | "bar" | null>("cake");
+    const [currentView, setCurrentView] = useState<"cake" | "bar" | null>("bar");
     const [timebookSummary, setTimebookSummary] = useState<TimebookSummary | null>(null);
     const [filename, setFilename] = useState<string>("");
 
@@ -25,7 +25,7 @@ export function App() {
 
     async function handleLoadFile() {
         try {
-            const timebookSummary = await TimebookService.ParseFile(filename);
+            const timebookSummary = await TimebookService.LoadFile(filename);
             if (!timebookSummary) {
                 setTimebookSummary(null);
                 return;

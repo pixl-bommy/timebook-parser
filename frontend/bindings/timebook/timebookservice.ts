@@ -9,11 +9,8 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 // @ts-ignore: Unused imports
 import * as $models from "./models.js";
 
-/**
- * Read a file and parse its content to a map of task short to total duration in minutes
- */
-export function ParseFile(filePath: string): $CancellablePromise<$models.TimebookSummary> {
-    return $Call.ByID(2254233486, filePath).then(($result: any) => {
+export function LoadFile(filePath: string): $CancellablePromise<$models.TimebookSummary> {
+    return $Call.ByID(1022382219, filePath).then(($result: any) => {
         return $$createType0($result);
     });
 }

@@ -7,14 +7,28 @@ import (
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
-type TimebookService struct{}
+type TimebookService struct {
+	// TODO: this is used to cache the last parsed file, to avoid re-parsing it
+	// for multiple future interpretations (e.g. use as is, sum per categroy).
+	currentTimebookSummary *TimebookSummary
+}
 
 func (t *TimebookService) ServiceStartup(ctx context.Context, options application.ServiceOptions) error {
 	return nil
 }
 
+func (t *TimebookService) LoadFile(filePath string) (TimebookSummary, error) {
+	t.currentTimebookSummary = nil
+	timebookSummary, err := t.parseFile(filePath)
+
+	if err == nil {
+		t.currentTimebookSummary = &timebookSummary
+	}
+	return timebookSummary, err
+}
+
 // Read a file and parse its content to a map of task short to total duration in minutes
-func (t *TimebookService) ParseFile(filePath string) (TimebookSummary, error) {
+func (*TimebookService) parseFile(filePath string) (TimebookSummary, error) {
 	lines, err := utils.LoadFileToStringArray(filePath)
 	if err != nil {
 		return TimebookSummary{}, err
@@ -97,10 +111,11 @@ func (t *TimebookService) ParseFile(filePath string) (TimebookSummary, error) {
 		entries = append(entries, entry)
 	}
 
-	return TimebookSummary{
+	timebookSummary := TimebookSummary{
 		Entries:   entries,
 		TotalMins: totalMins,
-	}, nil
+	}
+	return timebookSummary, nil
 }
 
 func newTaskShortFromInput(input string) TaskShort {
