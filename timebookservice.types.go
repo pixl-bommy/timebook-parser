@@ -80,7 +80,7 @@ func (t TaskShort) Category() CategoryShort {
 	case Meetings:
 		return MeetingsCategory
 	case Support:
-		return MaintenanceCategory
+		return SupportCategory
 	case Maintenance:
 		return MaintenanceCategory
 	case Miscellaneous:
@@ -97,6 +97,7 @@ const (
 	UnplannedWorkCategory CategoryShort = "O"
 	MeetingsCategory      CategoryShort = "M"
 	MaintenanceCategory   CategoryShort = "W"
+	SupportCategory       CategoryShort = "S"
 	MiscellaneousCategory CategoryShort = "V"
 )
 
@@ -110,6 +111,8 @@ func (t CategoryShort) FullName() string {
 		return "Meetings"
 	case MaintenanceCategory:
 		return "Wartung"
+	case SupportCategory:
+		return "Support"
 	case MiscellaneousCategory:
 		return "Verschiedenes"
 	default:

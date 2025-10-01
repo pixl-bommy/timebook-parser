@@ -15,6 +15,7 @@ export enum CategoryShort {
     UnplannedWorkCategory = "O",
     MeetingsCategory = "M",
     MaintenanceCategory = "W",
+    SupportCategory = "S",
     MiscellaneousCategory = "V",
 };
 

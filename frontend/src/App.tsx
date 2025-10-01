@@ -6,11 +6,12 @@ import { GoSync } from "react-icons/go";
 import { TimebookService, TimebookSummary } from "../bindings/timebook";
 import { CakeView } from "./views/CakeView";
 import { HorizontalBarView } from "./views/HorizontalBarView";
+import { HorizontalCategoryBarView } from "./views/HorizontalCategoryBarView";
 
 import "./App.css";
 
 export function App() {
-    const [currentView, setCurrentView] = useState<"cake" | "bar" | null>("bar");
+    const [currentView, setCurrentView] = useState<"cake" | "bar" | "barCategory" | null>("barCategory");
     const [timebookSummary, setTimebookSummary] = useState<TimebookSummary | null>(null);
     const [filename, setFilename] = useState<string>("");
 
@@ -57,6 +58,9 @@ export function App() {
                     ? (currentView === "cake" && <CakeView timebookSummary={timebookSummary} />) ||
                       (currentView === "bar" && (
                           <HorizontalBarView timebookSummary={timebookSummary} />
+                      )) ||
+                      (currentView === "barCategory" && (
+                          <HorizontalCategoryBarView timebookSummary={timebookSummary} />
                       )) ||
                       "No view selected."
                     : "No data to display."}
