@@ -26,5 +26,5 @@ export function HorizontalBarView({ timebookSummary }: { timebookSummary: Timebo
         },
     );
 
-    return <>{bars}</>;
+    return <div className="bars">{bars}</div>;
 }

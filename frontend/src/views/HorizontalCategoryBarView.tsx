@@ -50,5 +50,5 @@ export function HorizontalCategoryBarView({
             );
         });
 
-    return <>{bars}</>;
+    return <div className="bars">{bars}</div>;
 }
