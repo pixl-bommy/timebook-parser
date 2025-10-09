@@ -1,4 +1,4 @@
-import { SummaryEntry, TimebookSummary } from "../../bindings/timebook";
+import { SummaryEntry, TimebookSummary } from "../../../bindings/timebook";
 
 import "./HorizontalBarView.css";
 
