@@ -1,11 +1,61 @@
-nav a {
-    display: block;
-    text-decoration: none;
-    color: var(--color-text);
+#app-root {
+    display: flex;
+    flex-direction: row;
 
-    padding: 1rem 2rem;
+    height: 100%;
+    width: 100%;
+}
 
-    &:hover {
-        background-color: color-mix(in srgb, var(--color-background), #fff 20%)
+nav {
+    position: relative;
+    max-width: 15rem;
+    padding-right: 1rem;
+
+    border-right: 1px solid var(--color-text);
+
+    transition: max-width 0.3s ease, border-right-color 0.3s ease;
+
+    &.collapsed {
+        max-width: 0;
+        border-right-color: transparent;
     }
+}
+
+nav .nav-toggle {
+    position: absolute;
+    right: 0;
+    top: 2rem;
+    transform: translateX(50%);
+    width: 1.5rem;
+    aspect-ratio: 1 / 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--color-text);
+    border-radius: 4px;
+    background: var(--color-background);
+}
+
+nav .nav-links {
+    overflow: hidden;
+
+    & a {
+        display: block;
+        text-decoration: none;
+        color: var(--color-text);
+        white-space: nowrap;
+        overflow: hidden;
+
+        padding: 1rem 2rem;
+
+        &:hover {
+            background-color: color-mix(in srgb, var(--color-background), #fff 20%)
+        }
+    }
+}
+
+main {
+    padding: 1rem 2rem;
 }

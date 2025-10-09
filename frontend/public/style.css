@@ -43,11 +43,3 @@ body {
     right: 0;
     bottom: 0;
 }
-
-#root {
-    display: flex;
-    flex-direction: row;
-
-    height: 100%;
-    width: 100%;
-}
