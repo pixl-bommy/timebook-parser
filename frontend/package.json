@@ -10,9 +10,10 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "@wailsio/runtime": "^3.0.0-alpha.72",
+        "@wailsio/runtime": "latest",
         "react": "^19.2.0",
-        "react-dom": "^19.2.0"
+        "react-dom": "^19.2.0",
+        "react-router-dom": "^7.9.4"
     },
     "devDependencies": {
         "@types/react": "^19.2.2",
