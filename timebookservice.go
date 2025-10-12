@@ -11,18 +11,35 @@ type TimebookService struct {
 	// TODO: this is used to cache the last parsed file, to avoid re-parsing it
 	// for multiple future interpretations (e.g. use as is, sum per categroy).
 	currentTimebookSummary *TimebookSummary
+	currentFilePath        *string
 }
 
 func (t *TimebookService) ServiceStartup(ctx context.Context, options application.ServiceOptions) error {
 	return nil
 }
 
+func (t *TimebookService) GetCached() struct {
+	Summary  *TimebookSummary
+	FilePath *string
+} {
+	return struct {
+		Summary  *TimebookSummary
+		FilePath *string
+	}{
+		Summary:  t.currentTimebookSummary,
+		FilePath: t.currentFilePath,
+	}
+}
+
 func (t *TimebookService) LoadFile(filePath string) (TimebookSummary, error) {
 	t.currentTimebookSummary = nil
+	t.currentFilePath = nil
+
 	timebookSummary, err := t.parseFile(filePath)
 
 	if err == nil {
 		t.currentTimebookSummary = &timebookSummary
+		t.currentFilePath = &filePath
 	}
 	return timebookSummary, err
 }

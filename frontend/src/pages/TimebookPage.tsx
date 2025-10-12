@@ -16,6 +16,19 @@ export function TimebookPage() {
     const [filename, setFilename] = useState<string>("");
 
     useEffect(() => {
+        TimebookService.GetCached()
+            .then((cached) => {
+                if (!cached?.FilePath) return;
+
+                setFilename(cached.FilePath);
+                setTimebookSummary(cached.Summary);
+            })
+            .catch(() => {
+                // Ignore errors here, as it just means no cached file is available.
+            });
+    }, []);
+
+    useEffect(() => {
         if (filename === "") {
             setTimebookSummary(null);
             return;

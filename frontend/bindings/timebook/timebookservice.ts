@@ -9,6 +9,12 @@ import { Call as $Call, CancellablePromise as $CancellablePromise, Create as $Cr
 // @ts-ignore: Unused imports
 import * as $models from "./models.js";
 
+export function GetCached(): $CancellablePromise<{"Summary": $models.TimebookSummary | null, "FilePath": string | null}> {
+    return $Call.ByID(476418537).then(($result: any) => {
+        return $$createType2($result);
+    });
+}
+
 export function LoadFile(filePath: string): $CancellablePromise<$models.TimebookSummary> {
     return $Call.ByID(1022382219, filePath).then(($result: any) => {
         return $$createType0($result);
@@ -21,3 +27,7 @@ export function SelectFile(): $CancellablePromise<string> {
 
 // Private type creation functions
 const $$createType0 = $models.TimebookSummary.createFrom;
+const $$createType1 = $Create.Nullable($$createType0);
+const $$createType2 = $Create.Struct({
+    "Summary": $$createType1,
+});
