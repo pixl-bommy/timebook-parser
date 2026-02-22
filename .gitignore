@@ -1,6 +1,5 @@
 .build/
 .exampleFiles/
-data/
 node_modules/
 
 .task

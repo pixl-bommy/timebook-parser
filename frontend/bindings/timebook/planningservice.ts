@@ -20,7 +20,7 @@ export function AddWorkEnd(): $CancellablePromise<void> {
 /**
  * Try to load a timebook file.
  * 
- * Tries to load a file named {filename}.md, which should be located
+ * Tries to load a file named {filename}.json, which should be located
  * in current data folder.
  * 
  * If no file with expected name is found, or if loading the file fails,
@@ -36,7 +36,7 @@ export function LoadFile(filename: string): $CancellablePromise<void> {
 /**
  * Try to save a timebook file.
  * 
- * This will save existing cached data to a file named {p.filename}.md
+ * This will save existing cached data to a file named {p.filename}.json
  * to data/ folder. If the file already exists it will be overwritten.
  * 
  * If filename is empty or there is no cached data, nothing will happen.

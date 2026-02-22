@@ -1,9 +1,28 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 )
+
+// Load json file
+func LoadJsonFile(filePath string) (map[string]any, error) {
+	// Read file
+	fileContent, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read file: %w", err)
+	}
+
+	var output map[string]any
+
+	err = json.Unmarshal(fileContent, &output)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse json file: %w", err)
+	}
+
+	return output, nil
+}
 
 // Load file to string array
 // Returns an array of strings of each line in the file, separated by newline

@@ -25,6 +25,8 @@ func (p *PlanningService) ServiceStartup(ctx context.Context, options applicatio
 
 	// TODO: to avoid errors later, let's make sure data/ folder exists at this point
 
+	p.LoadFile("invalid-file")
+
 	p.log.Println("ServiceStartup done")
 	return nil
 }
@@ -39,7 +41,7 @@ func (p *PlanningService) ServiceShutdown() error {
 
 // Try to load a timebook file.
 //
-// Tries to load a file named {filename}.md, which should be located
+// Tries to load a file named {filename}.json, which should be located
 // in current data folder.
 //
 // If no file with expected name is found, or if loading the file fails,
@@ -56,12 +58,12 @@ func (p *PlanningService) LoadFile(filename string) {
 	p.cached = nil
 
 	// TODO: load and parse file
-	lines, err := utils.LoadFileToStringArray(buildWorkbookPath(filename))
+	json, err := utils.LoadJsonFile(buildWorkbookPath(filename))
 	if err != nil {
-		p.log.Printf("LoadFile(%s): TODO: failed to load", p.filename)
+		p.log.Printf("LoadFile(%s): TODO: something failed: %s", p.filename, err.Error())
 		return
 	}
-	p.log.Print(lines)
+	p.log.Print(json)
 
 	// there is no cached data at this point, so loading must have failed
 	if p.filename == "" || p.cached == nil {
@@ -75,7 +77,7 @@ func (p *PlanningService) LoadFile(filename string) {
 
 // Try to save a timebook file.
 //
-// This will save existing cached data to a file named {p.filename}.md
+// This will save existing cached data to a file named {p.filename}.json
 // to data/ folder. If the file already exists it will be overwritten.
 //
 // If filename is empty or there is no cached data, nothing will happen.
@@ -117,5 +119,5 @@ func buildWorkbookPath(filename string) string {
 		return ""
 	}
 
-	return fmt.Sprintf("./data/%s.md", filename)
+	return fmt.Sprintf("./data/%s.json", filename)
 }

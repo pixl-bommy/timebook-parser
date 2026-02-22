@@ -46,7 +46,7 @@ func main() {
 	// 'Mac' options tailor the window when running on macOS.
 	// 'BackgroundColour' is the background colour of the window.
 	// 'URL' is the URL that will be loaded into the webview.
-	app.Window.NewWithOptions(application.WebviewWindowOptions{
+	/* app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title: "Timebook Parser",
 		Mac: application.MacWindow{
 			InvisibleTitleBarHeight: 50,
@@ -55,7 +55,7 @@ func main() {
 		},
 		BackgroundColour: application.NewRGB(27, 38, 54),
 		URL:              "/",
-	})
+	}) */
 
 	// Create a goroutine that emits an event containing the current time every second.
 	// The frontend can listen to this event and update the UI accordingly.
