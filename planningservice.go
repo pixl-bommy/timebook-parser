@@ -25,7 +25,11 @@ func (p *PlanningService) ServiceStartup(ctx context.Context, options applicatio
 
 	// TODO: to avoid errors later, let's make sure data/ folder exists at this point
 
-	p.LoadFile("invalid-file")
+	///////////////////////////////////////////////////////////////////////////
+	// TODO: remove later
+	p.LoadFile("cookies")
+	// TODO: END remove later
+	///////////////////////////////////////////////////////////////////////////
 
 	p.log.Println("ServiceStartup done")
 	return nil
@@ -58,12 +62,13 @@ func (p *PlanningService) LoadFile(filename string) {
 	p.cached = nil
 
 	// TODO: load and parse file
-	json, err := utils.LoadJsonFile(buildWorkbookPath(filename))
+	json, err := utils.LoadJsonFile[internal.PlanningPeriod](buildWorkbookPath(filename))
 	if err != nil {
 		p.log.Printf("LoadFile(%s): TODO: something failed: %s", p.filename, err.Error())
 		return
 	}
-	p.log.Print(json)
+	p.filename = filename
+	p.cached = json
 
 	// there is no cached data at this point, so loading must have failed
 	if p.filename == "" || p.cached == nil {
@@ -82,12 +87,22 @@ func (p *PlanningService) LoadFile(filename string) {
 //
 // If filename is empty or there is no cached data, nothing will happen.
 func (p *PlanningService) SaveFile() {
+	// if there is nothing to save, do nothing
 	if p.filename == "" || p.cached == nil {
 		p.log.Printf("SaveFile(): TODO: Nothing to write out")
 		return
 	}
 
-	p.log.Printf("SaveFile(): TODO: Write out file %s with given data", p.filename)
+	filePath := buildWorkbookPath(p.filename)
+
+	// try to save current cached data
+	err := utils.StoreJsonFile(filePath, p.cached)
+	if err != nil {
+		p.log.Printf("SaveFile(): failed to write file %s: %s", filePath, err.Error())
+		return
+	}
+
+	p.log.Printf("SaveFile(): stored file %s", filePath)
 }
 
 func (p *PlanningService) AddWork() {

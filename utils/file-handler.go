@@ -7,21 +7,38 @@ import (
 )
 
 // Load json file
-func LoadJsonFile(filePath string) (map[string]any, error) {
+func LoadJsonFile[T any](filePath string) (*T, error) {
 	// Read file
 	fileContent, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file: %w", err)
 	}
 
-	var output map[string]any
+	var output T
 
 	err = json.Unmarshal(fileContent, &output)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse json file: %w", err)
 	}
 
-	return output, nil
+	return &output, nil
+}
+
+// Save json to file
+func StoreJsonFile[T any](filePath string, content *T) error {
+	// encode json content to bytes
+	data, err := json.Marshal(content)
+	if err != nil {
+		return fmt.Errorf("failed to encode json content: %w", err)
+	}
+
+	// write file
+	err = os.WriteFile(filePath, data, 0644)
+	if err != nil {
+		return fmt.Errorf("failed to write file: %w", err)
+	}
+
+	return nil
 }
 
 // Load file to string array
