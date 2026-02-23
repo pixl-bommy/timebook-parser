@@ -26,8 +26,8 @@ func LoadJsonFile[T any](filePath string) (*T, error) {
 
 // Save json to file
 func StoreJsonFile[T any](filePath string, content *T) error {
-	// encode json content to bytes
-	data, err := json.Marshal(content)
+	// encode json content to "readable" bytes
+	data, err := json.MarshalIndent(content, "", "    ")
 	if err != nil {
 		return fmt.Errorf("failed to encode json content: %w", err)
 	}

@@ -27,6 +27,14 @@ func (p *PlanningService) ServiceStartup(ctx context.Context, options applicatio
 
 	///////////////////////////////////////////////////////////////////////////
 	// TODO: remove later
+	p.filename = "cookies"
+	p.cached = internal.NewPlanningPeriod()
+	p.cached.AddWorkEntry(internal.DailyTask, "Something to do")
+	p.cached.AddWorkEntry(internal.DailyTask, "Something other")
+	p.cached.AddWorkEntry(internal.WorkBreak, "")
+	p.cached.AddWorkEntry(internal.DailyTask, "Something to do after")
+	p.cached.AddWorkEntry(internal.ClosingTime, "Something to do")
+
 	p.LoadFile("cookies")
 	// TODO: END remove later
 	///////////////////////////////////////////////////////////////////////////
@@ -77,7 +85,7 @@ func (p *PlanningService) LoadFile(filename string) {
 	}
 
 	// at this point loading succeeded
-	p.log.Printf("LoadFile(%s): TODO: loading succeeded", p.filename)
+	p.log.Printf("LoadFile(%s): loading succeeded", p.filename)
 }
 
 // Try to save a timebook file.
